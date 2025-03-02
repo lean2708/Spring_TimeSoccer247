@@ -1,0 +1,25 @@
+server:
+  servlet:
+    context-path: /timesoccer247
+spring:
+  application:
+    name: Spring_TimeSoccer247
+
+# Database
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/timesoccer247}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+
+
+jwt:
+  signerKey: ${JWT_SIGNER_KEY:cRZGyZy3nhibNJ/7EkSox0o+G/iS0vJ+XQDA6hzw+pgCJD1WSDPB+K38gYboOCia}
+  accessToken:
+    expiry-in-minutes: ${JWT_ACCESS_TOKEN_IN_MINUTES:15}
+
+
