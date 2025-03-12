@@ -6,6 +6,7 @@ import com.timesoccer247.Spring_TimeSoccer247.dto.response.PageResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.PaymentResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.PromotionResponse;
 import com.timesoccer247.Spring_TimeSoccer247.service.PaymentService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/payments")
-    public ApiResponse<PaymentResponse> addPayment(@RequestBody PaymentRequest request){
+    public ApiResponse<PaymentResponse> addPayment(@Valid @RequestBody PaymentRequest request){
         return ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(paymentService.addPayment(request))
@@ -37,7 +38,7 @@ public class PaymentController {
     }
 
     @PutMapping("/payments/{id}")
-    public ApiResponse<PaymentResponse> updatePayment(@PathVariable long id, @RequestBody PaymentRequest request){
+    public ApiResponse<PaymentResponse> updatePayment(@PathVariable long id,@Valid @RequestBody PaymentRequest request){
         return ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.OK.value())
                 .result(paymentService.updatePayment(id, request))

@@ -39,7 +39,7 @@ public class BallController {
     }
 
     @PutMapping("/balls/{id}")
-    public ApiResponse<BallResponse> updateBall(@PathVariable long id, @RequestBody BallRequest request){
+    public ApiResponse<BallResponse> updateBall(@PathVariable long id,@Valid @RequestBody BallRequest request){
         return ApiResponse.<BallResponse>builder()
                 .code(HttpStatus.OK.value())
                 .result(ballService.updateBall(id, request))

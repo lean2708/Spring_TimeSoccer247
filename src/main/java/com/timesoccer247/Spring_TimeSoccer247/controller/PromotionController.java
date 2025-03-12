@@ -4,6 +4,7 @@ import com.timesoccer247.Spring_TimeSoccer247.dto.request.PaymentRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.PromotionRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.*;
 import com.timesoccer247.Spring_TimeSoccer247.service.PromotionService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class PromotionController {
     private final PromotionService promotionService;
 
     @PostMapping("/promotions")
-    public ApiResponse<PromotionResponse> addPromotion(@RequestBody PromotionRequest request){
+    public ApiResponse<PromotionResponse> addPromotion(@Valid @RequestBody PromotionRequest request){
         return ApiResponse.<PromotionResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(promotionService.addPromotion(request))
@@ -35,7 +36,7 @@ public class PromotionController {
     }
 
     @PutMapping("/promotions/{id}")
-    public ApiResponse<PromotionResponse> updatePromotion(@PathVariable long id, @RequestBody PromotionRequest request){
+    public ApiResponse<PromotionResponse> updatePromotion(@PathVariable long id,@Valid @RequestBody PromotionRequest request){
         return ApiResponse.<PromotionResponse>builder()
                 .code(HttpStatus.OK.value())
                 .result(promotionService.updatePromotion(id, request))

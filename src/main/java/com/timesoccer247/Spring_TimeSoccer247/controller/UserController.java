@@ -5,6 +5,7 @@ import com.timesoccer247.Spring_TimeSoccer247.dto.response.ApiResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.PageResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.UserResponse;
 import com.timesoccer247.Spring_TimeSoccer247.service.UserService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users")
-    public ApiResponse<UserResponse> create(@RequestBody UserRequest request){
+    public ApiResponse<UserResponse> create(@Valid @RequestBody UserRequest request){
         return ApiResponse.<UserResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(userService.create(request))
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable long id, @RequestBody UserRequest request){
+    public ApiResponse<UserResponse> updateUser(@PathVariable long id,@Valid @RequestBody UserRequest request){
         return ApiResponse.<UserResponse>builder()
                 .code(HttpStatus.OK.value())
                 .result(userService.updateUser(id, request))

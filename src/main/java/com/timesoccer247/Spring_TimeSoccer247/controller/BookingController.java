@@ -4,6 +4,7 @@ import com.timesoccer247.Spring_TimeSoccer247.dto.request.BookingRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.FieldRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.*;
 import com.timesoccer247.Spring_TimeSoccer247.service.BookingService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping("/bookings")
-    public ApiResponse<BookingResponse> addBooking(@RequestBody BookingRequest request){
+    public ApiResponse<BookingResponse> addBooking(@Valid @RequestBody BookingRequest request){
         return ApiResponse.<BookingResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(bookingService.addBooking(request))
@@ -35,7 +36,7 @@ public class BookingController {
     }
 
     @PutMapping("/bookings/{id}")
-    public ApiResponse<BookingResponse> updateBooking(@PathVariable long id, @RequestBody BookingRequest request){
+    public ApiResponse<BookingResponse> updateBooking(@PathVariable long id,@Valid @RequestBody BookingRequest request){
         return ApiResponse.<BookingResponse>builder()
                 .code(HttpStatus.OK.value())
                 .result(bookingService.updateBooking(id, request))

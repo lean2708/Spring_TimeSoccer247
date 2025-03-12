@@ -6,6 +6,7 @@ import com.timesoccer247.Spring_TimeSoccer247.dto.response.FieldResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.PageResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.PaymentResponse;
 import com.timesoccer247.Spring_TimeSoccer247.service.FieldService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class FieldController {
     private final FieldService fieldService;
 
     @PostMapping("/fields")
-    public ApiResponse<FieldResponse> addField(@RequestBody FieldRequest request){
+    public ApiResponse<FieldResponse> addField(@Valid @RequestBody FieldRequest request){
         return ApiResponse.<FieldResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .result(fieldService.addField(request))
@@ -37,7 +38,7 @@ public class FieldController {
     }
 
     @PutMapping("/fields/{id}")
-    public ApiResponse<FieldResponse> updateField(@PathVariable long id, @RequestBody FieldRequest request){
+    public ApiResponse<FieldResponse> updateField(@PathVariable long id,@Valid @RequestBody FieldRequest request){
         return ApiResponse.<FieldResponse>builder()
                 .code(HttpStatus.OK.value())
                 .result(fieldService.updateField(id, request))

@@ -56,7 +56,7 @@ public class RoleController {
 
     @PutMapping("/roles/{id}")
     public ApiResponse<RoleResponse> update(@Min(value = 1, message = "ID phải lớn hơn hoặc bằng 1")
-                                            @PathVariable long id, @RequestBody RoleRequest request){
+                                            @PathVariable long id,@Valid @RequestBody RoleRequest request){
         return ApiResponse.<RoleResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message("Update Role By Id")
