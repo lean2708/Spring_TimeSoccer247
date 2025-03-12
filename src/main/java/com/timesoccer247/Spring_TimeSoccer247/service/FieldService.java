@@ -12,6 +12,7 @@ import com.timesoccer247.Spring_TimeSoccer247.mapper.FieldMapper;
 import com.timesoccer247.Spring_TimeSoccer247.repository.BallRepository;
 import com.timesoccer247.Spring_TimeSoccer247.repository.BookingRepository;
 import com.timesoccer247.Spring_TimeSoccer247.repository.FieldRepository;
+import com.timesoccer247.Spring_TimeSoccer247.repository.PaymentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,7 @@ public class FieldService {
     private final FieldMapper fieldMapper;
     private final PageableService pageableService;
     private final BallRepository ballRepository;
+    private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
 
     public FieldResponse addField(FieldRequest request) {
@@ -68,7 +70,12 @@ public class FieldService {
         }
 
         if(!CollectionUtils.isEmpty(field.getBookings())){
-            field.getBookings().forEach(booking -> booking.setField(null));
+            field.getBookings().forEach(booking ->{
+                if(booking.getPayment() != null){
+                    paymentRepository.delete(booking.getPayment());
+                }
+            });
+            bookingRepository.deleteAll(field.getBookings());
         }
 
         fieldRepository.delete(field);

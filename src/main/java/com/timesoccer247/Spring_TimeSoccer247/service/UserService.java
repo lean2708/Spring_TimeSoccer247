@@ -8,10 +8,7 @@ import com.timesoccer247.Spring_TimeSoccer247.entity.User;
 import com.timesoccer247.Spring_TimeSoccer247.exception.AppException;
 import com.timesoccer247.Spring_TimeSoccer247.exception.ErrorCode;
 import com.timesoccer247.Spring_TimeSoccer247.mapper.UserMapper;
-import com.timesoccer247.Spring_TimeSoccer247.repository.BookingRepository;
-import com.timesoccer247.Spring_TimeSoccer247.repository.PromotionRepository;
-import com.timesoccer247.Spring_TimeSoccer247.repository.RoleRepository;
-import com.timesoccer247.Spring_TimeSoccer247.repository.UserRepository;
+import com.timesoccer247.Spring_TimeSoccer247.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -36,6 +34,7 @@ public class UserService {
     private final BookingRepository bookingRepository;
     private final PromotionRepository promotionRepository;
     private final PageableService pageableService;
+    private final PaymentRepository paymentRepository;
 
     public UserResponse create(UserRequest request) {
        if(userRepository.existsByEmail(request.getEmail())){
@@ -86,6 +85,11 @@ public class UserService {
                 .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         if(user.getBookings() != null && !user.getBookings().isEmpty()){
+            user.getBookings().forEach(booking ->{
+                if(booking.getPayment() != null){
+                    paymentRepository.delete(booking.getPayment());
+                }
+            });
             bookingRepository.deleteAll(user.getBookings());
         }
         if(user.getPromotions() != null && !user.getPromotions().isEmpty()){

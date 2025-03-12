@@ -25,7 +25,7 @@ public enum ErrorCode {
     PHONE_EXISTED(1012, "Phone đã tồn tại", HttpStatus.BAD_REQUEST),
     BALL_EXISTED(1013, "Ball đã tồn tại", HttpStatus.BAD_REQUEST),
     BALL_NOT_EXISTED(1014,"Ball không tồn tại", HttpStatus.NOT_FOUND),
-    ROLE_NOT_EXISTED(1002, "Không tìm thấy người dùng", HttpStatus.NOT_FOUND),
+    ROLE_NOT_EXISTED(1002, "Role không tồn tại", HttpStatus.NOT_FOUND),
     ROLE_EXISTED(1003, "Role đã tồn tại", HttpStatus.BAD_REQUEST),
     TOKEN_TYPE_INVALID(1036, "Loại token không hợp lệ", HttpStatus.UNAUTHORIZED),
     INVALID_REFRESH_TOKEN(1035, "Refresh token không hợp lệ hoặc đã hết hạn", HttpStatus.UNAUTHORIZED),

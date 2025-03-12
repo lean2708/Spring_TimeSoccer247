@@ -2,6 +2,7 @@ package com.timesoccer247.Spring_TimeSoccer247.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.timesoccer247.Spring_TimeSoccer247.constants.GenderEnum;
 import com.timesoccer247.Spring_TimeSoccer247.constants.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,6 +31,7 @@ public class User extends BaseEntity {
     String password;
     String phone;
     String avatarUrl;
+    GenderEnum gender;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
