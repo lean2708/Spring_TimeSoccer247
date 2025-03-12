@@ -1,6 +1,7 @@
 package com.timesoccer247.Spring_TimeSoccer247.dto.response;
 
 import com.timesoccer247.Spring_TimeSoccer247.constants.PaymentStatus;
+import com.timesoccer247.Spring_TimeSoccer247.dto.basic.BookingBasic;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +19,6 @@ public class PaymentResponse {
     PaymentStatus status;
     double amount;
     LocalDateTime paymentTime;
+
+    BookingBasic booking;
 }

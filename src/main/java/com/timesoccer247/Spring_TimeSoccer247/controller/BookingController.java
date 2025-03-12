@@ -2,10 +2,10 @@ package com.timesoccer247.Spring_TimeSoccer247.controller;
 
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.BookingRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.FieldRequest;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.ApiResponse;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.BookingResponse;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.FieldResponse;
+import com.timesoccer247.Spring_TimeSoccer247.dto.response.*;
 import com.timesoccer247.Spring_TimeSoccer247.service.BookingService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +50,19 @@ public class BookingController {
                 .code(HttpStatus.NO_CONTENT.value())
                 .result(null)
                 .message("Delete Booking")
+                .build();
+    }
+
+    @GetMapping("/bookings")
+    public ApiResponse<PageResponse<BookingResponse>> fetchAll(@Min(value = 1, message = "pageNo phải lớn hơn 0")
+                                                            @RequestParam(defaultValue = "1") int pageNo,
+                                                            @RequestParam(defaultValue = "10") int pageSize,
+                                                            @Pattern(regexp = "^(\\w+?)(-)(asc|desc)$", message = "Định dạng của sortBy phải là: field-asc hoặc field-desc")
+                                                            @RequestParam(required = false) String sortBy){
+        return ApiResponse.<PageResponse<BookingResponse>>builder()
+                .code(HttpStatus.OK.value())
+                .result(bookingService.fetchAllBookings(pageNo, pageSize, sortBy))
+                .message("Fetch All Bookings With Pagination")
                 .build();
     }
 }

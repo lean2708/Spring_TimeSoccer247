@@ -13,4 +13,6 @@ public class PaymentRequest {
     PaymentStatus status;
     double amount;
     LocalDateTime paymentTime;
+
+    Long bookingId;
 }

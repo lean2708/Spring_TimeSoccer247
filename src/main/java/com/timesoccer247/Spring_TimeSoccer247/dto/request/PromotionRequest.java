@@ -11,4 +11,6 @@ import java.time.LocalDate;
 public class PromotionRequest {
     double discount;
     LocalDate validUntil;
+
+    Long userId;
 }

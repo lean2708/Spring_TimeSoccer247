@@ -13,4 +13,7 @@ public class BookingRequest {
     LocalDateTime startTime;
     LocalDateTime endTime;
     BookingStatus status;
+
+    Long userId;
+    Long fieldId;
 }
