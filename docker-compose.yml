@@ -12,7 +12,7 @@ services:
       - soccer_data:/var/lib/mysql
       - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - '3306:3306'
+      - '3308:3306'
     networks:
       - soccer_backend
 
@@ -29,7 +29,7 @@ services:
     networks:
       - soccer_backend
     depends_on:
-      - mysql
+      - mysql-timesoccer247
 
 networks:
   soccer_backend:

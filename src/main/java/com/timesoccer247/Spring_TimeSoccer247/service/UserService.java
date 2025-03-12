@@ -52,7 +52,6 @@ public class UserService {
             Set<Role> roleList = roleRepository.findAllByIdIn(request.getRoleIds());
             user.setRoles(roleList);
         }
-
        return userMapper.toUserResponse(userRepository.save(user));
     }
 

@@ -40,7 +40,6 @@ public class RoleService {
         }
 
         Role role = roleMapper.toRole(request);
-
         if(request.getPermissions() != null && !request.getPermissions().isEmpty()){
             Set<Permission> permissions = permissionRepository.findAllByNameIn(request.getPermissions());
             role.setPermissions(permissions);
@@ -63,7 +62,6 @@ public class RoleService {
         Pageable pageable = pageableService.createPageable(pageNo, pageSize, sortBy);
 
         Page<Role> rolePage = roleRepository.findAll(pageable);
-
         List<RoleResponse> responses =  new ArrayList<>();
         for(Role role : rolePage.getContent()){
             responses.add(roleMapper.toRoleResponse(role));
@@ -88,7 +86,6 @@ public class RoleService {
             Set<Permission> permissions = permissionRepository.findAllByNameIn(request.getPermissions());
             roleDB.setPermissions(permissions);
         }
-
         return roleMapper.toRoleResponse(roleRepository.save(roleDB));
     }
 
@@ -106,24 +103,20 @@ public class RoleService {
                 permission.getRoles().remove(roleDB);
             });
         }
-
         roleRepository.delete(roleDB);
     }
 
     public void deleteRoles(Set<Long> ids) {
         Set<Role> roleList = roleRepository.findAllByIdIn(ids);
-
         if(roleList.isEmpty()){
             throw new AppException(ErrorCode.ROLE_NOT_FOUND);
         }
-
         for(Role role : roleList){
             role.getUsers().forEach(user -> {
                 user.getRoles().remove(role);
                 userRepository.save(user);
             });
         }
-
         roleRepository.deleteAllInBatch(roleList);
     }
 }
