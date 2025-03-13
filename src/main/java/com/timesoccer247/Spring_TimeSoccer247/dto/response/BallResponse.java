@@ -19,5 +19,4 @@ public class BallResponse {
     String type;
     double price;
 
-    FieldBasic field;
 }

@@ -1,6 +1,5 @@
 package com.timesoccer247.Spring_TimeSoccer247.controller;
 
-import com.timesoccer247.Spring_TimeSoccer247.dto.request.PaymentRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.PromotionRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.*;
 import com.timesoccer247.Spring_TimeSoccer247.service.PromotionService;

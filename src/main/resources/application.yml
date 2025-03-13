@@ -6,6 +6,9 @@ spring:
   application:
     name: Spring_TimeSoccer247
 
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+    time-zone: Asia/Ho_Chi_Minh
 # Database
   datasource:
     url: ${DATABASE_URL:jdbc:mysql://localhost:3306/timesoccer247}
@@ -51,4 +54,15 @@ cloud:
   max-size-image: 10MB
   folder-video: soccer247/video
   max-size-video: 100MB
+
+# VNPAY
+payment:
+  vnPay:
+    url: ${VNPAY_URL}
+    tmn-code: ${VNPAY_TMN_CODE}
+    secret-key: ${VNPAY_SECRET_KEY}
+    return-url: ${VNPAY_RETURN_URL}
+    version: ${VNPAY_VERSION}
+    command: ${VNPAY_COMMAND}
+    order-type: ${VNPAY_ORDER_TYPE}
 

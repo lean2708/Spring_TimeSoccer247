@@ -2,17 +2,14 @@ package com.timesoccer247.Spring_TimeSoccer247.service;
 
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.BallRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.BallResponse;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.BookingResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.PageResponse;
 import com.timesoccer247.Spring_TimeSoccer247.entity.Ball;
-import com.timesoccer247.Spring_TimeSoccer247.entity.Booking;
 import com.timesoccer247.Spring_TimeSoccer247.entity.Field;
 import com.timesoccer247.Spring_TimeSoccer247.exception.AppException;
 import com.timesoccer247.Spring_TimeSoccer247.exception.ErrorCode;
 import com.timesoccer247.Spring_TimeSoccer247.mapper.BallMapper;
 import com.timesoccer247.Spring_TimeSoccer247.repository.BallRepository;
 import com.timesoccer247.Spring_TimeSoccer247.repository.FieldRepository;
-import com.timesoccer247.Spring_TimeSoccer247.repository.FileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -34,10 +32,6 @@ public class BallService {
     public BallResponse addBall(BallRequest request) {
 
         Ball ball = ballMapper.toBall(request);
-
-        if(request.getFieldId() != null){
-            fieldRepository.findById(request.getFieldId()).ifPresent(ball::setField);
-        }
 
         return ballMapper.toBallResponse(ballRepository.save(ball));
     }
@@ -54,9 +48,6 @@ public class BallService {
                 .orElseThrow(()-> new AppException(ErrorCode.BALL_NOT_EXISTED));
 
         ballMapper.updateBall(ball, request);
-        if(request.getFieldId() != null){
-            fieldRepository.findById(request.getFieldId()).ifPresent(ball::setField);
-        }
 
         return ballMapper.toBallResponse(ballRepository.save(ball));
     }
@@ -65,11 +56,6 @@ public class BallService {
     public void deleteBall(long id) {
         Ball ball = ballRepository.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.BALL_NOT_EXISTED));
-
-        if(ball.getField() != null){
-            ball.getField().getBalls().remove(ball);
-            fieldRepository.save(ball.getField());
-        }
 
         ballRepository.delete(ball);
     }

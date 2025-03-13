@@ -2,7 +2,6 @@ package com.timesoccer247.Spring_TimeSoccer247.dto.basic;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -10,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FieldBasic {
+public class BallBasic {
     long id;
     String name;
     double price;

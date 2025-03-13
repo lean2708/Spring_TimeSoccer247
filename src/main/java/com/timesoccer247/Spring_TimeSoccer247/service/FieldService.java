@@ -3,9 +3,7 @@ package com.timesoccer247.Spring_TimeSoccer247.service;
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.FieldRequest;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.FieldResponse;
 import com.timesoccer247.Spring_TimeSoccer247.dto.response.PageResponse;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.PaymentResponse;
 import com.timesoccer247.Spring_TimeSoccer247.entity.Field;
-import com.timesoccer247.Spring_TimeSoccer247.entity.Payment;
 import com.timesoccer247.Spring_TimeSoccer247.exception.AppException;
 import com.timesoccer247.Spring_TimeSoccer247.exception.ErrorCode;
 import com.timesoccer247.Spring_TimeSoccer247.mapper.FieldMapper;
@@ -20,8 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,7 +29,6 @@ public class FieldService {
     private final FieldRepository fieldRepository;
     private final FieldMapper fieldMapper;
     private final PageableService pageableService;
-    private final BallRepository ballRepository;
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
 
@@ -65,10 +63,6 @@ public class FieldService {
         Field field = fieldRepository.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.FIELD_NOT_EXISTED));
 
-        if(!CollectionUtils.isEmpty(field.getBalls())){
-            field.getBalls().forEach(ball -> ball.setField(null));
-        }
-
         if(!CollectionUtils.isEmpty(field.getBookings())){
             field.getBookings().forEach(booking ->{
                 if(booking.getPayment() != null){
@@ -98,6 +92,8 @@ public class FieldService {
                 .items(responses)
                 .build();
     }
+
+
 
     public List<FieldResponse> convertListPromotionResponse(List<Field> fieldList){
         List<FieldResponse> fieldResponseList = new ArrayList<>();

@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Set;
+
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
@@ -22,7 +24,6 @@ public class Ball extends BaseEntity {
     String type;
     double price;
 
-    @ManyToOne
-    @JoinColumn(name = "field_id")
-    Field field;
+    @ManyToMany(mappedBy = "balls")
+    Set<Booking> bookings;
 }

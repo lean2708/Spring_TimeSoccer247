@@ -27,9 +27,4 @@ public class Field extends BaseEntity {
     @OneToMany(mappedBy = "field", fetch = FetchType.LAZY)
     @JsonIgnore
     Set<Booking> bookings;
-
-    @OneToMany(mappedBy = "field", fetch = FetchType.LAZY)
-    @JsonIgnore
-    Set<Ball> balls;
-
 }

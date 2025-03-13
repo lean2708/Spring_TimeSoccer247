@@ -8,8 +8,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 @RestController
@@ -64,6 +68,20 @@ public class BookingController {
                 .code(HttpStatus.OK.value())
                 .result(bookingService.fetchAllBookings(pageNo, pageSize, sortBy))
                 .message("Fetch All Bookings With Pagination")
+                .build();
+    }
+
+    @GetMapping("/bookings/field/{fieldId}")
+    public ApiResponse<PageResponse<BookingDetailResponse>> getBookedTimes(
+            @PathVariable Long fieldId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate date,
+            @RequestParam(defaultValue = "1") int pageNo,
+            @RequestParam(defaultValue = "10") int pageSize) {
+
+        return ApiResponse.<PageResponse<BookingDetailResponse>>builder()
+                .code(HttpStatus.OK.value())
+                .result(bookingService.getBookedTimesByField(fieldId, date, pageNo, pageSize))
+                .message("Fetch bookings for field on selected date with pagination")
                 .build();
     }
 }

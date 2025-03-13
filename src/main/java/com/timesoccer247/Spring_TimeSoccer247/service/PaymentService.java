@@ -1,14 +1,12 @@
 package com.timesoccer247.Spring_TimeSoccer247.service;
 
+import com.timesoccer247.Spring_TimeSoccer247.config.VNPAYConfig;
+import com.timesoccer247.Spring_TimeSoccer247.constants.BookingStatus;
+import com.timesoccer247.Spring_TimeSoccer247.constants.PaymentStatus;
 import com.timesoccer247.Spring_TimeSoccer247.dto.request.FieldRequest;
-import com.timesoccer247.Spring_TimeSoccer247.dto.request.PaymentRequest;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.FieldResponse;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.PageResponse;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.PaymentResponse;
-import com.timesoccer247.Spring_TimeSoccer247.dto.response.PromotionResponse;
-import com.timesoccer247.Spring_TimeSoccer247.entity.Field;
-import com.timesoccer247.Spring_TimeSoccer247.entity.Payment;
-import com.timesoccer247.Spring_TimeSoccer247.entity.Promotion;
+import com.timesoccer247.Spring_TimeSoccer247.dto.request.PaymentCallbackRequest;
+import com.timesoccer247.Spring_TimeSoccer247.dto.response.*;
+import com.timesoccer247.Spring_TimeSoccer247.entity.*;
 import com.timesoccer247.Spring_TimeSoccer247.exception.AppException;
 import com.timesoccer247.Spring_TimeSoccer247.exception.ErrorCode;
 import com.timesoccer247.Spring_TimeSoccer247.mapper.FieldMapper;
@@ -16,6 +14,9 @@ import com.timesoccer247.Spring_TimeSoccer247.mapper.PaymentMapper;
 import com.timesoccer247.Spring_TimeSoccer247.repository.BookingRepository;
 import com.timesoccer247.Spring_TimeSoccer247.repository.FieldRepository;
 import com.timesoccer247.Spring_TimeSoccer247.repository.PaymentRepository;
+import com.timesoccer247.Spring_TimeSoccer247.repository.UserRepository;
+import com.timesoccer247.Spring_TimeSoccer247.util.VNPayUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -24,8 +25,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -34,14 +37,61 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
     private final PageableService pageableService;
+    private final VNPAYConfig vnpayConfig;
+    private final FieldRepository fieldRepository;
 
-    public PaymentResponse addPayment(PaymentRequest request) {
 
-        Payment payment = paymentMapper.toPayment(request);
+    public VNPayResponse createVnPayPayment(Long bookingId, HttpServletRequest request) {
+        Map<String, String> vnpParamsMap = vnpayConfig.getVNPayConfig();
 
-        if(request.getBookingId() != null){
-            bookingRepository.findById(request.getBookingId()).ifPresent(payment::setBooking);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(()-> new AppException(ErrorCode.BOOKING_NOT_EXISTED));
+
+        double ballPrice = 0;
+        if(!CollectionUtils.isEmpty(booking.getBalls())){
+            ballPrice = booking.getBalls().stream()
+                    .mapToDouble(Ball::getPrice)
+                    .sum();
         }
+
+        long amount = (long)((booking.getField().getPrice() + ballPrice) * 100);
+
+        vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
+
+        vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
+
+        // Tao chuoi da ma hoa
+        String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
+
+        // Tao chuoi chua ma hoa
+        String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
+        // Thêm vnp_SecureHash vào URL
+        String vnpSecureHash = VNPayUtil.hmacSHA512(vnpayConfig.getSecretKey(), hashData);
+
+        queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
+
+        // Tao URL Final
+        String paymentUrl = vnpayConfig.getVnp_PayUrl() + "?" + queryUrl;
+
+        return VNPayResponse.builder()
+                .code("OK")
+                .message("Mã thanh toán đã được tạo thành công. Bạn sẽ được chuyển đến cổng thanh toán để hoàn tất giao dịch.")
+                .paymentUrl(paymentUrl).build();
+    }
+
+    @Transactional
+    public PaymentResponse updatePayment(PaymentCallbackRequest request){
+        Booking booking = bookingRepository.findById(request.getBookingId())
+                .orElseThrow(()-> new AppException(ErrorCode.BOOKING_NOT_EXISTED));
+        booking.setStatus(BookingStatus.BOOKED);
+        bookingRepository.save(booking);
+
+        Payment payment = Payment.builder()
+                .amount(request.getAmount())
+                .paymentTime(LocalDateTime.now())
+                .status(PaymentStatus.PAID)
+                .booking(booking)
+                .build();
 
         return paymentMapper.toPaymentResponse(paymentRepository.save(payment));
     }
@@ -53,18 +103,18 @@ public class PaymentService {
         return paymentMapper.toPaymentResponse(payment);
     }
 
-    public PaymentResponse updatePayment(long id, PaymentRequest request) {
-        Payment payment = paymentRepository.findById(id)
-                .orElseThrow(()-> new AppException(ErrorCode.PAYMENT_NOT_EXISTED));
-
-        paymentMapper.updatePayment(payment, request);
-
-        if(request.getBookingId() != null){
-            bookingRepository.findById(request.getBookingId()).ifPresent(payment::setBooking);
-        }
-
-        return paymentMapper.toPaymentResponse(paymentRepository.save(payment));
-    }
+//    public PaymentResponse updatePayment(long id, PaymentRequest request) {
+//        Payment payment = paymentRepository.findById(id)
+//                .orElseThrow(()-> new AppException(ErrorCode.PAYMENT_NOT_EXISTED));
+//
+//        paymentMapper.updatePayment(payment, request);
+//
+//        if(request.getBookingId() != null){
+//            bookingRepository.findById(request.getBookingId()).ifPresent(payment::setBooking);
+//        }
+//
+//        return paymentMapper.toPaymentResponse(paymentRepository.save(payment));
+//    }
 
     @Transactional
     public void deletePayment(long id) {

@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class Payment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
-    PaymentStatus status;
+    PaymentStatus status = PaymentStatus.UNPAID;
     double amount;
     LocalDateTime paymentTime;
 

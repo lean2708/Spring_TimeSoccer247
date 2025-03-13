@@ -39,7 +39,10 @@ public enum ErrorCode {
     EMAIL_SEND_FAILED(1017, "Lỗi khi gửi email", HttpStatus.BAD_REQUEST),
     VERIFICATION_CODE_NOT_FOUND(1018, "Mã xác nhận không hợp lệ", HttpStatus.NOT_FOUND),
     VERIFICATION_CODE_EXPIRED(1019, "Mã xác nhận đã hết hạn", HttpStatus.BAD_REQUEST),
-    FORGOT_PASSWORD_TOKEN_NOT_FOUND(1026, "Token đặt lại mật khẩu không tồn tại hoặc đã hết hạn", HttpStatus.NOT_FOUND)
+    FORGOT_PASSWORD_TOKEN_NOT_FOUND(1026, "Token đặt lại mật khẩu không tồn tại hoặc đã hết hạn", HttpStatus.NOT_FOUND),
+    BALL_NOT_FOUND(1028, "Không tìm thấy ball nào với danh sách ID đã cung cấp", HttpStatus.NOT_FOUND),
+    BALL_ALREADY_BOOKED(1019, "Ball đã được đặt trong thời gian này", HttpStatus.BAD_REQUEST),
+    FIELD_ALREADY_BOOKED(1019, "Filed đã được đặt trong thời gian này", HttpStatus.BAD_REQUEST)
 
 
     ;
