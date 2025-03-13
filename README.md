@@ -16,7 +16,7 @@ cd Spring_TimeSoccer247
 ## 2. Docker Guideline
 **Stop and Remove Old Containers:**
 ```java
-docker-compose down
+docker stop $(docker ps -q)
 ```
 **Run Your Application**
 ```java
